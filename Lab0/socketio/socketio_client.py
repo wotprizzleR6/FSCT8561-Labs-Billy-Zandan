@@ -7,7 +7,7 @@ def connect():
     # Prompt user to type a message, then send it to the server
     message = input("Enter message: ")
     sio.emit('message', message)
-    # Disconnect automatically after sending - no Ctrl+C needed
+    # Disconnect automatically after sending
     sio.disconnect()
 
 @sio.event
