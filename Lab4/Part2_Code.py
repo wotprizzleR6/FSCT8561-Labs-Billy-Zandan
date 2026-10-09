@@ -7,7 +7,7 @@ PCAP = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 packets = rdpcap(PCAP)
 
-# Pre-build tcp_packets list (used in Step 5)
+# From Part 1 Step 5
 tcp_packets = []
 for pkt in packets:
     if TCP in pkt:

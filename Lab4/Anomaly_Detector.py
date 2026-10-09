@@ -20,7 +20,6 @@ def main():
     ]
     relevant.sort(key=lambda p: float(p.time))
 
-    # Sliding-window tracking
     ip_timestamps: dict[str, list[float]] = {}
     alerted_ips: set[str] = set()
 
