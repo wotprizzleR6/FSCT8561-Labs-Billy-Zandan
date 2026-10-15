@@ -1,0 +1,18 @@
+import requests
+
+base_url = "http://localhost:3000"
+response = requests.get(base_url, timeout=5)
+search_url = base_url + "/rest/products/search"
+r = requests.get(search_url, params={"q": "apple"}, timeout=5)
+
+records = []
+
+for term in ["apple", "banana"]:
+    result = requests.get(search_url, params={"q": term}, timeout=5)
+    records.append({
+    "input": term,
+    "status_code": result.status_code,
+    "response_length": len(result.content)
+})
+
+print(records)
