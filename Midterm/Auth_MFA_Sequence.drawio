@@ -1,0 +1,100 @@
+<mxfile host="65bd71144e">
+    <diagram id="auth-mfa-sequence" name="Authentication &amp; MFA Sequence">
+        <mxGraphModel dx="750" dy="450" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="750" pageHeight="450" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                
+                <!-- Client Lifeline Box -->
+                <mxCell id="client_box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" value="Client (client.py)" vertex="1">
+                    <mxGeometry height="35" width="160" x="80" y="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="client_line" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;endArrow=none;startArrow=none;" edge="1" source="client_box">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                
+                <!-- Server Lifeline Box -->
+                <mxCell id="server_box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" value="Server (server.py)" vertex="1">
+                    <mxGeometry height="35" width="160" x="430" y="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="server_line" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;endArrow=none;startArrow=none;" edge="1" source="server_box">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- 1. Connect TCP -->
+                <mxCell id="msg1_req" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=10;endArrow=classic;" value="1. Connect 127.0.0.1:8888">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="90" as="sourcePoint"/>
+                        <mxPoint x="510" y="90" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                
+                <!-- 1. Welcome Response -->
+                <mxCell id="msg1_resp" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;dashed=1;fontColor=#000000;fontSize=9.5;endArrow=classic;" value="OK WELCOME (State = CONNECTED)">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="125" as="sourcePoint"/>
+                        <mxPoint x="160" y="125" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- 2. LOGIN -->
+                <mxCell id="msg2_req" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=10;endArrow=classic;" value="2. LOGIN {username, password}">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="165" as="sourcePoint"/>
+                        <mxPoint x="510" y="165" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Server Note: Verify PBKDF2 -->
+                <mxCell id="note_login" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=8.5;align=left;spacingLeft=5;" value="Verifies PBKDF2-SHA256&lt;br&gt;State = OTP_PENDING" vertex="1">
+                    <mxGeometry height="32" width="145" x="525" y="165" as="geometry"/>
+                </mxCell>
+
+                <!-- 2. OTP Challenge -->
+                <mxCell id="msg2_resp" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;dashed=1;fontColor=#000000;fontSize=9.5;endArrow=classic;" value="CHALLENGE OTP_REQUIRED (120s TTL)">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="215" as="sourcePoint"/>
+                        <mxPoint x="160" y="215" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- 3. OTP -->
+                <mxCell id="msg3_req" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=10;endArrow=classic;" value="3. OTP {otp: 6-digit code}">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="255" as="sourcePoint"/>
+                        <mxPoint x="510" y="255" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Server Note: Verify TOTP -->
+                <mxCell id="note_otp" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=8.5;align=left;spacingLeft=5;" value="Verifies TOTP &amp; counter&lt;br&gt;State = AUTHENTICATED" vertex="1">
+                    <mxGeometry height="32" width="145" x="525" y="255" as="geometry"/>
+                </mxCell>
+
+                <!-- 3. OK Response -->
+                <mxCell id="msg3_resp" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#000000;strokeWidth=1.2;dashed=1;fontColor=#000000;fontSize=9.5;endArrow=classic;" value="OK AUTHENTICATED (returns role &amp; permissions)">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="305" as="sourcePoint"/>
+                        <mxPoint x="160" y="305" as="targetPoint"/>
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Policy Footer Note Box -->
+                <mxCell id="policy_box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;spacingLeft=8;" value="&lt;b&gt;Security Controls:&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Strict Step Order:&lt;/b&gt; Sending OTP before LOGIN returns ERROR AUTH_SEQUENCE.&lt;br&gt;• &lt;b&gt;Pending Timeout:&lt;/b&gt; If OTP is not submitted within 120s (OTP_PENDING_TTL_S), session resets to CONNECTED." vertex="1">
+                    <mxGeometry height="48" width="590" x="80" y="360" as="geometry"/>
+                </mxCell>
+
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
