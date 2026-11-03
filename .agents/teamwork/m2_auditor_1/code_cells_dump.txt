@@ -1,0 +1,356 @@
+======================================================================
+CELL 2 [exec_count: 1]
+----------------------------- SOURCE ---------------------------------
+%pip -q install Pillow
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Note: you may need to restart the kernel to use updated packages.
+
+
+======================================================================
+CELL 3 [exec_count: 2]
+----------------------------- SOURCE ---------------------------------
+from pathlib import Path
+from PIL import Image, ExifTags
+
+image_dir = Path("Images") if Path("Images").exists() else Path("Lab6/Images")
+print("Images found:", len(list(image_dir.glob("*.png"))))
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Images found: 6
+
+
+======================================================================
+CELL 6 [exec_count: 3]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Brain-Channel.png"
+with Image.open(image_path) as img:
+    exif = img.getexif()
+    print("EXIF tags:", len(exif))
+    for tag_id, value in exif.items():
+        print(ExifTags.TAGS.get(tag_id, tag_id), ":", value)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+EXIF tags: 5
+ResolutionUnit : 2
+ImageDescription : LATERAL: Pivot to internal Domain Controller using Mimikatz.
+YCbCrPositioning : 1
+XResolution : 72.0
+YResolution : 72.0
+
+
+======================================================================
+CELL 8 [exec_count: 4]
+----------------------------- SOURCE ---------------------------------
+# Your turn: choose another image and repeat the EXIF check.
+image_path = image_dir / "Activation.png"
+with Image.open(image_path) as img:
+    exif = img.getexif()
+    print("EXIF tags:", len(exif))
+    for tag_id, value in exif.items():
+        print(ExifTags.TAGS.get(tag_id, tag_id), ":", value)
+    
+    # Check Exif Sub-IFD (tag 34665 / ExifOffset)
+    sub_ifd = exif.get_ifd(ExifTags.IFD.Exif)
+    print("\nExif Sub-IFD tags:", len(sub_ifd))
+    for tag_id, value in sub_ifd.items():
+        print(" ", ExifTags.TAGS.get(tag_id, tag_id), ":", value)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+EXIF tags: 10
+GPSInfo : 396
+ResolutionUnit : 2
+ExifOffset : 204
+Make : Nikon
+Model : D750
+Software : Adobe Lightroom 13.0
+DateTime : 2025:02:02 10:15:00
+YCbCrPositioning : 1
+XResolution : 72.0
+YResolution : 72.0
+
+Exif Sub-IFD tags: 7
+  ExifVersion : b'0232'
+  ComponentsConfiguration : b'\x01\x02\x03\x00'
+  FlashPixVersion : b'0100'
+  DateTimeOriginal : 2025:02:02 10:15:00
+  DateTimeDigitized : 2025:02:02 10:15:00
+  ColorSpace : 65535
+  UserComment : b'ASCII\x00\x00\x00VULN: Identify unpatched CVE-2024-XXXX in web gateway.'
+
+
+======================================================================
+CELL 10 [exec_count: 5]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Brain.png"
+with Image.open(image_path) as img:
+    for key, value in img.info.items():
+        if isinstance(value, str):
+            print(key, ":", value)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Software : RECON: Perform DNS harvesting and Subdomain enumeration.
+
+
+======================================================================
+CELL 12 [exec_count: 6]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Chemicals.png"
+with Image.open(image_path) as img:
+    for key, value in img.info.items():
+        if isinstance(value, str):
+            print(key, ":", value)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+ImageDescription : EXPLOIT: Deploy SQL Injection payload to bypass WAF.
+
+
+======================================================================
+CELL 14 [exec_count: 7]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Dopamine.png"
+with Image.open(image_path) as img:
+    xmp = img.info.get("XML:com.adobe.xmp") or img.info.get("xmp")
+    if isinstance(xmp, bytes):
+        xmp = xmp.decode("utf-8", errors="replace")
+    clean_xmp = xmp.lstrip("\ufeff") if xmp else "No XMP found"
+    print(clean_xmp)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+<?xpacket begin='﻿' id='W5M0MpCehiHzreSzNTczkc9d'?>
+<x:xmpmeta xmlns:x='adobe:ns:meta/' x:xmptk='Image::ExifTool 12.76'>
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+ <rdf:Description rdf:about=''
+  xmlns:exif='http://ns.adobe.com/exif/1.0/'>
+  <exif:MakerNote>PERSIST: Establish reverse shell via obfuscated cron job.</exif:MakerNote>
+ </rdf:Description>
+</rdf:RDF>
+</x:xmpmeta>
+<?xpacket end='r'?>
+
+
+======================================================================
+CELL 17 [exec_count: 8]
+----------------------------- SOURCE ---------------------------------
+import base64
+
+example = "SGVsbG8="
+print(base64.b64decode(example).decode("utf-8"))
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Hello
+
+
+======================================================================
+CELL 19 [exec_count: 9]
+----------------------------- SOURCE ---------------------------------
+encoded_message = "RVhGSUw6IFR1bm5lbCBjb21wcmVzc2VkIGRhdGFiYXNlIGR1bXAgdmlhIEROUyBDb3ZlcnQgQ2hhbm5lbC4="  # Extracted from Music.png Copyright tag
+if encoded_message:
+    print(base64.b64decode(encoded_message).decode("utf-8"))
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+EXFIL: Tunnel compressed database dump via DNS Covert Channel.
+
+
+======================================================================
+CELL 22 [exec_count: 10]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Activation.png"
+with Image.open(image_path) as img:
+    exif = img.getexif()
+    sub_ifd = exif.get_ifd(ExifTags.IFD.Exif)
+    raw_comment = sub_ifd.get(37510)
+    if raw_comment:
+        if raw_comment.startswith(b"ASCII\x00\x00\x00"):
+            secret = raw_comment[8:].decode("utf-8")
+        else:
+            secret = raw_comment.decode("utf-8", errors="ignore")
+        print("Found in UserComment (Sub-IFD 37510):", secret)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in UserComment (Sub-IFD 37510): VULN: Identify unpatched CVE-2024-XXXX in web gateway.
+
+
+======================================================================
+CELL 24 [exec_count: 11]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Brain-Channel.png"
+with Image.open(image_path) as img:
+    exif = img.getexif()
+    secret = exif.get(270)
+    print("Found in EXIF ImageDescription (tag 270):", secret)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in EXIF ImageDescription (tag 270): LATERAL: Pivot to internal Domain Controller using Mimikatz.
+
+
+======================================================================
+CELL 26 [exec_count: 12]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Brain.png"
+with Image.open(image_path) as img:
+    secret = img.info.get("Software")
+    print("Found in PNG text chunk 'Software':", secret)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in PNG text chunk 'Software': RECON: Perform DNS harvesting and Subdomain enumeration.
+
+
+======================================================================
+CELL 28 [exec_count: 13]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Chemicals.png"
+with Image.open(image_path) as img:
+    secret = img.info.get("ImageDescription")
+    print("Found in PNG text chunk 'ImageDescription':", secret)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in PNG text chunk 'ImageDescription': EXPLOIT: Deploy SQL Injection payload to bypass WAF.
+
+
+======================================================================
+CELL 30 [exec_count: 14]
+----------------------------- SOURCE ---------------------------------
+import xml.etree.ElementTree as ET
+
+image_path = image_dir / "Dopamine.png"
+with Image.open(image_path) as img:
+    xmp = img.info.get("XML:com.adobe.xmp") or img.info.get("xmp")
+    if isinstance(xmp, bytes):
+        xmp = xmp.decode("utf-8", errors="replace")
+    clean_xmp = xmp.lstrip("\ufeff")
+    root = ET.fromstring(clean_xmp)
+    secret = ""
+    for elem in root.iter():
+        if elem.tag.endswith("MakerNote"):
+            secret = elem.text
+            print("Found in XMP <exif:MakerNote>:", secret)
+            break
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in XMP <exif:MakerNote>: PERSIST: Establish reverse shell via obfuscated cron job.
+
+
+======================================================================
+CELL 32 [exec_count: 15]
+----------------------------- SOURCE ---------------------------------
+import base64
+
+image_path = image_dir / "Music.png"
+with Image.open(image_path) as img:
+    exif = img.getexif()
+    b64_val = exif.get(33432) or img.info.get("Copyright")
+    secret = base64.b64decode(b64_val).decode("utf-8")
+    print("Found in EXIF/PNG Copyright (Base64 decoded):", secret)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Found in EXIF/PNG Copyright (Base64 decoded): EXFIL: Tunnel compressed database dump via DNS Covert Channel.
+
+
+======================================================================
+CELL 35 [exec_count: 16]
+----------------------------- SOURCE ---------------------------------
+for image_path in sorted(image_dir.glob("*.png")):
+    with Image.open(image_path) as img:
+        print(image_path.name, "→", img.format, "| fields:", len(img.info))
+
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Activation.png → PNG | fields: 8
+Brain-Channel.png → PNG | fields: 4
+Brain.png → PNG | fields: 4
+Chemicals.png → PNG | fields: 1
+Dopamine.png → PNG | fields: 5
+Music.png → PNG | fields: 8
+
+
+======================================================================
+CELL 37 [exec_count: 17]
+----------------------------- SOURCE ---------------------------------
+image_path = image_dir / "Brain.png"
+with Image.open(image_path) as img:
+    row = {
+        "filename": image_path.name,
+        "format": img.format,
+        "metadata_fields": ", ".join(img.info.keys()),
+        "risk_score": 0,
+    }
+print(row)
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+{'filename': 'Brain.png', 'format': 'PNG', 'metadata_fields': 'srgb, gamma, dpi, Software', 'risk_score': 0}
+
+
+======================================================================
+CELL 39 [exec_count: 18]
+----------------------------- SOURCE ---------------------------------
+import csv
+import sys
+from pathlib import Path
+
+# Ensure metadata_scanner can be imported whether notebook is run from Lab6 or project root
+for p in [Path("."), Path("Lab6")]:
+    if (p / "metadata_scanner.py").exists() and str(p.resolve()) not in sys.path:
+        sys.path.insert(0, str(p.resolve()))
+
+try:
+    import metadata_scanner
+    output_csv_path = Path("metadata_report.csv") if Path("Images").exists() else Path("Lab6/metadata_report.csv")
+    results = metadata_scanner.scan_directory(
+        image_dir=image_dir,
+        output_csv=output_csv_path,
+        verbose=False,
+        quiet=False
+    )
+    print(f"\nSuccessfully saved {len(results)} rows to {output_csv_path}")
+except ImportError as e:
+    print(f"Error loading metadata_scanner: {e}")
+----------------------------- OUTPUTS --------------------------------
+  [Output 0: stream]
+Scanning directory: C:\Users\BillyZ\Desktop\FSCT8561-Labs-Billy-Zandan\Lab6\Images
+Found 6 PNG image(s) to inspect.
+
+[1/6] Scanned Activation.png
+      Suspected Field : UserComment
+      Encoding        : EXIF ASCII header / plain text
+      Risk Score      : 15
+      Reason          : Confirmed covert message in UserComment (+10); camera hardware and GPS tags embedded in graphic (+5).
+
+[2/6] Scanned Brain-Channel.png
+      Suspected Field : ImageDescription
+      Encoding        : None (plain text)
+      Risk Score      : 10
+      Reason          : Confirmed covert message in ImageDescription (+10).
+
+[3/6] Scanned Brain.png
+      Suspected Field : Software
+      Encoding        : None (plain text)
+      Risk Score      : 10
+      Reason          : Confirmed covert message in Software (+10).
+
+[4/6] Scanned Chemicals.png
+      Suspected Field : ImageDescription
+      Encoding        : None (plain text)
+      Risk Score      : 10
+      Reason          : Confirmed covert message in ImageDescription (+10).
+
+[5/6] Scanned Dopamine.png
+      Suspected Field : XML:com.adobe.xmp (exif:MakerNote)
+      Encoding        : XML encapsulation / plain text
+      Risk Score      : 15
+      Reason          : Confirmed covert message in XML:com.adobe.xmp (exif:MakerNote) (+10); unusual container / embedded XMP packet (+5).
+
+[6/6] Scanned Music.png
+      Suspected Field : Copyright
+      Encoding        : Base64
+      Risk Score      : 15
+      Reason          : Confirmed covert message in Copyright (+10); obfuscated with Base64 encoding requiring decoding (+5).
+
+================================================================================
+Scan complete. Exported 6 record(s) to: C:\Users\BillyZ\Desktop\FSCT8561-Labs-Billy-Zandan\Lab6\metadata_report.csv
+================================================================================
+
+Successfully saved 6 rows to metadata_report.csv
+
+
