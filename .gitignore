@@ -1,4 +1,8 @@
 # Ignore the entire .obsidian configuration folder
 /Lab4/botnet-capture-20110812-rbot.pcap
-/.vscode/
-/venv/
+.vscode/
+.venv/
+.agents/
+/Lab7/__pycache__/
+/Lab7/IPython/
+/Lab7/PIL
