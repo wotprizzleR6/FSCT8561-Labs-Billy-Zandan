@@ -3,6 +3,3 @@
 .vscode/
 .venv/
 .agents/
-/Lab7/__pycache__/
-/Lab7/IPython/
-/Lab7/PIL

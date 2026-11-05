@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from PIL import Image
 
 def set_LSB(value, bit):
