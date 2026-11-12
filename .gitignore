@@ -3,3 +3,5 @@
 .vscode/
 .venv/
 .agents/
+.pytest_cache/
+venv/
