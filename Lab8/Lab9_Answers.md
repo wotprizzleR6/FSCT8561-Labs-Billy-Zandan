@@ -107,19 +107,34 @@ Tested using input `Password123`:
 * **Decrypted Text**: `This is a secret message for lab`
 
 ### 2. Observations & Modifications (7 Marks)
-* **Re-running with identical key, IV, and message**: Produces identical ciphertext. CBC mode is deterministic when the IV is fixed.
+
+#### Verified Terminal Execution (`Part C Code.py` Output):
+```text
+$ python Part\ C\ Code.py
+AES Encrypted: 2b79e8faeb99a72d4fe658e38083789c80e7aceec1cb1824a1876e0f24863ee4
+Decrypted: This is a secret message for lab
+Ciphertext with modified IV (hex): d13e13f1dc88087f3547caeff3b6958fe683782d1c24d5d75cd99b393f8bc4e8
+
+Observed Expected Key Error: Incorrect AES key length (6 bytes)
+Observed Expected Padding Error: Data must be padded to 16 byte boundary in CBC mode
+Padded message decrypted: Short msg
+```
+
+#### Detailed Breakdown:
+* **Re-running with identical key, IV, and message**: Produces identical ciphertext (`2b79e8fa...`). CBC mode is deterministic when the IV is fixed.
 * **Modifying the IV to `b"DifferentIV12345"`**:  
-  * Ciphertext changes completely to `d13e13f1dc88087f3547caeff3b6958fe683782d1c24d5d75cd99b393f8bc4e8`.
+  * **Observed Output**: `Ciphertext with modified IV (hex): d13e13f1dc88087f3547caeff3b6958fe683782d1c24d5d75cd99b393f8bc4e8`
+  * **Reason**: The IV is XORed with the first block of plaintext before encryption in CBC mode, so altering the IV completely changes all subsequent ciphertext blocks.
 * **Supplying invalid key length (`b"secret"` / 6 bytes)**:  
   * **Observed Error**: `ValueError: Incorrect AES key length (6 bytes)`
-  * **Reason**: AES accepts only 16, 24, or 32-byte keys.
+  * **Reason**: AES accepts only 16, 24, or 32-byte keys (AES-128, AES-192, or AES-256).
 * **Supplying unpadded message (`"Short msg"` / 9 bytes)**:  
   * **Observed Error**: `ValueError: Data must be padded to 16 byte boundary in CBC mode`
   * **Fix**: Apply padding to 16 bytes:
     ```python
     message = "Short msg".ljust(16).encode()
     ```
-    Padded message `b'Short msg       '` encrypts and decrypts cleanly.
+  * **Result**: Padded message `b'Short msg       '` encrypts and decrypts cleanly (output: `Padded message decrypted: Short msg`).
 
 ### 3. Part C Rubric Questions (7 Marks)
 1. **Why does AES require a specific key size?**  
